@@ -1,0 +1,23 @@
+name: editable_list
+description: Generic editable list that supports drag, delete, add and selection.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+   sdk: flutter
+  flutter_form_builder: ^9.4.1
+  flutter_riverpod: ^2.3.6
+  font_awesome_flutter: ^10.5.0
+  form_builder_validators: ^11.0.0
+  intl: ^0.19.0
+  uuid: ^4.0.0
+  wt_logging:
+    git:
+      url: https://github.com/tmcmaster/wt_logging.git
+  wt_models:
+    git:
+      url: https://github.com/tmcmaster/wt_models.git

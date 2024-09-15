@@ -1,7 +1,8 @@
-name: editable_list
+name: wt_editable_list
 description: Generic editable list that supports drag, delete, add and selection.
 publish_to: 'none'
 version: 1.0.0+1
+homepage: https://github.com/tmcmaster/wt_editable_list
 
 environment:
   sdk: ">=3.0.0 <4.0.0"

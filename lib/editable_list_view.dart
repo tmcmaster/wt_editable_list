@@ -19,7 +19,7 @@ part 'editable_list_tile.dart';
 
 // TODO: need to look into supporting expandable tiles with actions (for example call/message customer).
 class EditableListView<T extends BaseModel<T>> extends ConsumerWidget {
-  static final log = logger(EditableListView, level: Level.debug);
+  static final log = logger(EditableListView, level: Level.warning);
 
   final String name;
   final EditableListProviders<T> providers;
@@ -27,8 +27,7 @@ class EditableListView<T extends BaseModel<T>> extends ConsumerWidget {
   final Widget Function(T item) itemWidgetBuilder;
   final Widget Function(T? item) itemWidgetEditorBuilder;
   final bool Function(T item, String value) searchPredicate;
-  final bool Function(T item, T destItem, int oldIndex, int newIndex)?
-      moveValidator;
+  final bool Function(T item, T destItem, int oldIndex, int newIndex)? moveValidator;
   final void Function(List<EditableListItem<T>> list)? onMove;
 
   final bool canAdd;
@@ -78,7 +77,7 @@ class EditableListView<T extends BaseModel<T>> extends ConsumerWidget {
 
     return Column(
       children: [
-        if (canSelect || canAdd || title.isNotEmpty)
+        if (canSearch || canSelect || canAdd || title.isNotEmpty)
           Row(
             children: [
               Flexible(
@@ -121,8 +120,7 @@ class EditableListView<T extends BaseModel<T>> extends ConsumerWidget {
                         children: [
                           IconButton(
                             icon: const Icon(FontAwesomeIcons.plus),
-                            onPressed:
-                                canAdd ? () => addNewItem(context, null) : null,
+                            onPressed: canAdd ? () => addNewItem(context, null) : null,
                           ),
                         ],
                       )
@@ -137,8 +135,7 @@ class EditableListView<T extends BaseModel<T>> extends ConsumerWidget {
                   fit: FlexFit.tight,
                   child: SearchOrdersByName(
                     onChange: (value) {
-                      listNotifier
-                          .hideItems((item) => searchPredicate(item, value));
+                      listNotifier.hideItems((item) => searchPredicate(item, value));
                     },
                   ),
                 ),
@@ -152,8 +149,7 @@ class EditableListView<T extends BaseModel<T>> extends ConsumerWidget {
                   itemBuilder: (context, index) {
                     final EditableListItem<T> selectedItem = itemList[index];
                     // TODO: investigate why there is a separate list of IDs, instead of using the id in the item
-                    final String itemKeyName =
-                        '$name : $index : ${idList[index]}';
+                    final String itemKeyName = '$name : $index : ${idList[index]}';
                     // debugPrint('TILE KEY: $itemKeyName');
                     return _createTile(
                       idList[index],
@@ -168,8 +164,8 @@ class EditableListView<T extends BaseModel<T>> extends ConsumerWidget {
                     final item = itemList[oldIndex].item;
                     final destItem = itemList[newIndex].item;
                     log.d(item);
-                    final moveIsValid = moveValidator == null ||
-                        moveValidator!(item, destItem, oldIndex, newIndex);
+                    final moveIsValid =
+                        moveValidator == null || moveValidator!(item, destItem, oldIndex, newIndex);
                     log.d(moveIsValid);
                     if (moveIsValid) {
                       listNotifier.moveItem(

@@ -4,14 +4,15 @@ class EditableListProviders<T extends BaseModel<T>> {
   static final log = logger(EditableListProviders);
 
   final String name;
-  late StateNotifierProvider<EditableListStateNotifier<T>, List<EditableListItem<T>>> list;
-  late Provider<List<String>> ids;
-  late Provider<List<T>> items;
-  late Provider<List<T>> selected;
-  late AutoDisposeProviderFamily<EditableListItem<T>?, String> family;
-  late AlwaysAliveRefreshable<EditableListStateNotifier<T>> notifier;
-  late Provider<SelectionButtonState> selectionState;
-  late ProviderFamily<List<EditableListItem<T>>, String> search;
+  late final StateNotifierProvider<EditableListStateNotifier<T>, List<EditableListItem<T>>> list;
+  late final Provider<List<String>> ids;
+  late final Provider<List<T>> items;
+  late final Provider<List<T>> selected;
+  late final AutoDisposeProviderFamily<EditableListItem<T>?, String> family;
+  late final AlwaysAliveRefreshable<EditableListStateNotifier<T>> notifier;
+  late final Provider<SelectionButtonState> selectionState;
+  late final ProviderFamily<List<EditableListItem<T>>, String> search;
+
   // TODO: need a field for the function to give item to to get the string to be searched. Could return an array of strings.
   EditableListProviders({
     this.name = 'EditableListProviders',
@@ -42,6 +43,7 @@ class EditableListProviders<T extends BaseModel<T>> {
           log.d('Provider($name.list) is aAdding a listener to provider: ${provider.name}');
           final items = ref.read(provider);
           notifier.replaceAll(items);
+          // TODO: this should be keeping a reference to the subscription and disposing it.
           ref.listen(provider, (_, List<T> next) {
             notifier.replaceAll(next);
           });
@@ -106,9 +108,7 @@ class EditableListProviders<T extends BaseModel<T>> {
       name: '$name.search',
       (ref, query) {
         final orderList = ref.watch(listProvider);
-        return orderList
-            .where((element) => element.item.toString().toLowerCase().contains(query))
-            .toList();
+        return orderList.where((element) => element.item.toString().toLowerCase().contains(query)).toList();
       },
     );
   }

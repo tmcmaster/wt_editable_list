@@ -43,14 +43,13 @@ class EditableListTile<T extends IdSupport<T>> extends ConsumerWidget {
       child: selectedItemWatch != null
           ? Card(
               child: Padding(
-                padding: EdgeInsets.only(right: canReorder ? 40.0 : 0.0),
+                padding: EdgeInsets.only(right: canReorder ? 30.0 : 0.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     if (canSelect)
-                      Flexible(
-                        flex: 1,
-                        fit: FlexFit.tight,
+                      SizedBox(
+                        width: 36,
                         child: Checkbox(
                           value: selectedItemWatch.selected,
                           activeColor: Colors.grey,

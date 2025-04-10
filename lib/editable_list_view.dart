@@ -164,8 +164,7 @@ class EditableListView<T extends BaseModel<T>> extends ConsumerWidget {
                     final item = itemList[oldIndex].item;
                     final destItem = itemList[newIndex].item;
                     log.d(item);
-                    final moveIsValid =
-                        moveValidator == null || moveValidator!(item, destItem, oldIndex, newIndex);
+                    final moveIsValid = moveValidator == null || moveValidator!(item, destItem, oldIndex, newIndex);
                     log.d(moveIsValid);
                     if (moveIsValid) {
                       listNotifier.moveItem(
@@ -224,7 +223,7 @@ class EditableListView<T extends BaseModel<T>> extends ConsumerWidget {
         ? Dismissible(
             onDismissed: (_) => listNotifier.removeItem(selectedItem),
             key: tile.key!,
-            background: Container(color: Colors.orange),
+            background: Container(color: Colors.white),
             child: SizedBox(
               height: itemExtent,
               child: tile,

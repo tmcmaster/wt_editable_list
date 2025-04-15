@@ -71,9 +71,8 @@ class EditableListTile<T extends IdSupport<T>> extends ConsumerWidget {
                           : itemWidgetBuilder(selectedItemWatch.item),
                     ),
                     if (editIcon && canEdit)
-                      Flexible(
-                        flex: 1,
-                        fit: FlexFit.tight,
+                      SizedBox(
+                        width: 36,
                         child: IconButton(
                           icon: const Icon(FontAwesomeIcons.penToSquare),
                           onPressed: () => onEdit(selectedItemWatch),

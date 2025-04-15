@@ -9,7 +9,7 @@ class EditableListProviders<T extends BaseModel<T>> {
   late final Provider<List<T>> items;
   late final Provider<List<T>> selected;
   late final AutoDisposeProviderFamily<EditableListItem<T>?, String> family;
-  late final AlwaysAliveRefreshable<EditableListStateNotifier<T>> notifier;
+  late final Refreshable<EditableListStateNotifier<T>> notifier;
   late final Provider<SelectionButtonState> selectionState;
   late final ProviderFamily<List<EditableListItem<T>>, String> search;
 

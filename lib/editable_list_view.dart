@@ -29,6 +29,7 @@ class EditableListView<T extends BaseModel<T>> extends ConsumerWidget {
   final bool Function(T item, String value) searchPredicate;
   final bool Function(T item, T destItem, int oldIndex, int newIndex)? moveValidator;
   final void Function(List<EditableListItem<T>> list)? onMove;
+  final void Function()? onLoadPressed;
 
   final bool canAdd;
   final bool canDelete;
@@ -39,6 +40,7 @@ class EditableListView<T extends BaseModel<T>> extends ConsumerWidget {
   final bool canSearch;
   final bool allSelected;
   final bool editIcon;
+  final bool showScrollbars;
 
   final String title;
 
@@ -60,12 +62,14 @@ class EditableListView<T extends BaseModel<T>> extends ConsumerWidget {
     this.canSearch = false,
     this.allSelected = true,
     this.editIcon = false,
+    this.showScrollbars = false,
     // TODO: need to review where the title ends up.
     this.title = '',
     this.itemExtent,
     this.itemSpacing = 5,
     this.onMove,
     this.moveValidator,
+    this.onLoadPressed,
   });
 
   @override
@@ -79,59 +83,57 @@ class EditableListView<T extends BaseModel<T>> extends ConsumerWidget {
       children: [
         if (canSearch || canSelect || canAdd || title.isNotEmpty)
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Flexible(
-                flex: 2,
-                fit: FlexFit.tight,
-                child: canSelect
-                    ? Row(
-                        children: [
-                          if (itemList.isNotEmpty)
-                            SelectionButton(
-                              selectionState: selectedState,
-                              onSelectAll: () {
-                                listNotifier.selectAll(true);
-                              },
-                              onSelectNone: () {
-                                listNotifier.selectAll(false);
-                              },
-                            ),
-                        ],
-                      )
-                    : const SizedBox(
-                        width: 20,
-                        height: 20,
+              SizedBox(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    if (canSelect && itemList.isNotEmpty)
+                      SelectionButton(
+                        selectionState: selectedState,
+                        onSelectAll: () {
+                          listNotifier.selectAll(true);
+                        },
+                        onSelectNone: () {
+                          listNotifier.selectAll(false);
+                        },
                       ),
-              ),
-              Flexible(
-                flex: 4,
-                fit: FlexFit.tight,
-                child: Text(
-                  title,
-                  textAlign: TextAlign.center,
+                    if (onLoadPressed != null)
+                      IconButton(
+                        icon: const Icon(Icons.download),
+                        onPressed: onLoadPressed,
+                      ),
+                    if (canAdd)
+                      IconButton(
+                        icon: const Icon(FontAwesomeIcons.plus),
+                        onPressed: canAdd ? () => addNewItem(context, null) : null,
+                      ),
+                  ],
                 ),
               ),
               Flexible(
-                flex: 1,
+                flex: (title.length / 10).floor() + 1,
                 fit: FlexFit.tight,
-                child: canAdd
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          IconButton(
-                            icon: const Icon(FontAwesomeIcons.plus),
-                            onPressed: canAdd ? () => addNewItem(context, null) : null,
-                          ),
-                        ],
-                      )
-                    : const SizedBox(
-                        width: 20,
-                        height: 20,
-                      ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: title.isEmpty ? 0 : 8,
+                  ),
+                  child: Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ),
               if (canSearch)
                 Flexible(
-                  flex: 8,
+                  flex: 3,
                   fit: FlexFit.tight,
                   child: SearchOrdersByName(
                     onChange: (value) {
@@ -142,56 +144,61 @@ class EditableListView<T extends BaseModel<T>> extends ConsumerWidget {
             ],
           ),
         Expanded(
-          child: canReorder
-              ? ReorderableListView.builder(
-                  itemExtent: itemExtent,
-                  itemCount: idList.length,
-                  itemBuilder: (context, index) {
-                    final EditableListItem<T> selectedItem = itemList[index];
-                    // TODO: investigate why there is a separate list of IDs, instead of using the id in the item
-                    final String itemKeyName = '$name : $index : ${idList[index]}';
-                    // debugPrint('TILE KEY: $itemKeyName');
-                    return _createTile(
-                      idList[index],
-                      itemKeyName,
-                      listNotifier,
-                      context,
-                      selectedItem,
-                    );
-                  },
-                  // The reorder function
-                  onReorder: (oldIndex, newIndex) {
-                    final item = itemList[oldIndex].item;
-                    final destItem = itemList[newIndex].item;
-                    log.d(item);
-                    final moveIsValid = moveValidator == null || moveValidator!(item, destItem, oldIndex, newIndex);
-                    log.d(moveIsValid);
-                    if (moveIsValid) {
-                      listNotifier.moveItem(
-                        oldIndex,
-                        newIndex,
-                        onMove: onMove,
-                        // postMoveTransform: postMoveTransform,
+          child: ScrollConfiguration(
+            behavior: const ScrollBehavior().copyWith(
+              scrollbars: showScrollbars,
+            ),
+            child: canReorder
+                ? ReorderableListView.builder(
+                    itemExtent: itemExtent,
+                    itemCount: idList.length,
+                    itemBuilder: (context, index) {
+                      final EditableListItem<T> selectedItem = itemList[index];
+                      // TODO: investigate why there is a separate list of IDs, instead of using the id in the item
+                      final String itemKeyName = '$name : $index : ${idList[index]}';
+                      // debugPrint('TILE KEY: $itemKeyName');
+                      return _createTile(
+                        idList[index],
+                        itemKeyName,
+                        listNotifier,
+                        context,
+                        selectedItem,
                       );
-                    }
-                  },
-                )
-              : ListView.builder(
-                  itemExtent: itemExtent,
-                  itemCount: idList.length,
-                  itemBuilder: (context, index) {
-                    final EditableListItem<T> selectedItem = itemList[index];
-                    final String itemId = idList[index];
-                    final String itemKeyName = '$name : ${idList[index]}';
-                    return _createTile(
-                      itemId,
-                      itemKeyName,
-                      listNotifier,
-                      context,
-                      selectedItem,
-                    );
-                  },
-                ),
+                    },
+                    // The reorder function
+                    onReorder: (oldIndex, newIndex) {
+                      final item = itemList[oldIndex].item;
+                      final destItem = itemList[newIndex].item;
+                      log.d(item);
+                      final moveIsValid = moveValidator == null || moveValidator!(item, destItem, oldIndex, newIndex);
+                      log.d(moveIsValid);
+                      if (moveIsValid) {
+                        listNotifier.moveItem(
+                          oldIndex,
+                          newIndex,
+                          onMove: onMove,
+                          // postMoveTransform: postMoveTransform,
+                        );
+                      }
+                    },
+                  )
+                : ListView.builder(
+                    itemExtent: itemExtent,
+                    itemCount: idList.length,
+                    itemBuilder: (context, index) {
+                      final EditableListItem<T> selectedItem = itemList[index];
+                      final String itemId = idList[index];
+                      final String itemKeyName = '$name : ${idList[index]}';
+                      return _createTile(
+                        itemId,
+                        itemKeyName,
+                        listNotifier,
+                        context,
+                        selectedItem,
+                      );
+                    },
+                  ),
+          ),
         ),
       ],
     );
@@ -223,7 +230,7 @@ class EditableListView<T extends BaseModel<T>> extends ConsumerWidget {
         ? Dismissible(
             onDismissed: (_) => listNotifier.removeItem(selectedItem),
             key: tile.key!,
-            background: Container(color: Colors.white),
+            background: Container(color: Colors.transparent),
             child: SizedBox(
               height: itemExtent,
               child: tile,

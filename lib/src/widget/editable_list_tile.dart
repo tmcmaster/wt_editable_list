@@ -1,4 +1,4 @@
-part of 'editable_list_view.dart';
+part of '../editable_list_view.dart';
 
 class EditableListTile<T extends IdSupport<T>> extends ConsumerWidget {
   // final SelectableItem<T> selectableItem;

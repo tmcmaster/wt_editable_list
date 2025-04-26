@@ -1,7 +1,6 @@
-part of 'editable_list_view.dart';
+part of '../editable_list_view.dart';
 
-class EditableListStateNotifier<T extends BaseModel<T>>
-    extends StateNotifier<List<EditableListItem<T>>> {
+class EditableListStateNotifier<T extends BaseModel<T>> extends StateNotifier<List<EditableListItem<T>>> {
   static final log = logger(EditableListStateNotifier, level: Level.warning);
 
   EditableListStateNotifier() : super([]);

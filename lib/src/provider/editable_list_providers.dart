@@ -1,4 +1,4 @@
-part of 'editable_list_view.dart';
+part of '../editable_list_view.dart';
 
 class EditableListProviders<T extends BaseModel<T>> {
   static final log = logger(EditableListProviders);
@@ -17,7 +17,7 @@ class EditableListProviders<T extends BaseModel<T>> {
   EditableListProviders({
     this.name = 'EditableListProviders',
     List<T>? initialItems,
-    AlwaysAliveProviderBase<List<T>>? provider,
+    ProviderBase<List<T>>? provider,
   }) {
     list = _list(initialItems: initialItems, provider: provider);
     notifier = list.notifier;
@@ -32,7 +32,7 @@ class EditableListProviders<T extends BaseModel<T>> {
 
   StateNotifierProvider<EditableListStateNotifier<T>, List<EditableListItem<T>>> _list({
     List<T>? initialItems,
-    AlwaysAliveProviderBase<List<T>>? provider,
+    ProviderBase<List<T>>? provider,
   }) {
     return StateNotifierProvider<EditableListStateNotifier<T>, List<EditableListItem<T>>>(
       name: '$name.list',

@@ -368,21 +368,24 @@ packages:
   wt_logging:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "7baa9bfe29bb264b0f2a35e133a146e11603c14f"
-      url: "git@github.com:tmcmaster/wt_logging.git"
-    source: git
+      path: "../wt_logging"
+      relative: true
+    source: path
     version: "1.0.3+3"
   wt_models:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "3b77a853f937c172bc6ff1e115509cd593a7de71"
-      url: "git@github.com:tmcmaster/wt_models.git"
-    source: git
+      path: "../wt_models"
+      relative: true
+    source: path
     version: "1.0.0+1"
+  wt_state:
+    dependency: "direct main"
+    description:
+      path: "../wt_state"
+      relative: true
+    source: path
+    version: "0.0.1"
   xdg_directories:
     dependency: transitive
     description:

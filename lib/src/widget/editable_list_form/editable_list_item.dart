@@ -1,4 +1,4 @@
-part of 'editable_list_view.dart';
+part of '../../editable_list_view.dart';
 
 class EditableListItem<T extends IdSupport<T>> {
   final T item;

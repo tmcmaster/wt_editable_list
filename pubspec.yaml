@@ -23,3 +23,14 @@ dependencies:
   wt_models:
     git:
       url: git@github.com:tmcmaster/wt_models.git
+  wt_state:
+    git:
+      url: git@github.com:tmcmaster/wt_state.git
+
+dependency_overrides:
+  wt_logging:
+    path: ../wt_logging
+  wt_models:
+    path: ../wt_models
+  wt_state:
+    path: ../wt_state

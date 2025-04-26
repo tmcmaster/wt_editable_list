@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:uuid/uuid.dart';
-import 'package:wt_editable_list/search_order_by_name.dart';
-import 'package:wt_editable_list/selection_button/selection_button.dart';
+import 'package:wt_editable_list/src/widget/search_order_by_name.dart';
+import 'package:wt_editable_list/src/widget/selection_button/selection_button.dart';
 import 'package:wt_logging/wt_logging.dart';
 import 'package:wt_models/wt_models.dart';
+import 'package:wt_state/wt_state.dart';
 
-part 'editable_list_form.dart';
-part 'editable_list_form_definition.dart';
-part 'editable_list_item.dart';
-part 'editable_list_providers.dart';
-part 'editable_list_state_notifier.dart';
-part 'editable_list_tile.dart';
+part 'provider/editable_list_providers.dart';
+part 'provider/editable_list_state_notifier.dart';
+part 'widget/editable_list_form/editable_list_form.dart';
+part 'widget/editable_list_form/editable_list_form_definition.dart';
+part 'widget/editable_list_form/editable_list_item.dart';
+part 'widget/editable_list_tile.dart';
 
 // TODO: need to look into supporting expandable tiles with actions (for example call/message customer).
 class EditableListView<T extends BaseModel<T>> extends ConsumerWidget {

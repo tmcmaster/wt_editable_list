@@ -1,4 +1,4 @@
-part of 'editable_list_view.dart';
+part of '../../editable_list_view.dart';
 
 class EditableListForm<T extends BaseModel<T>> extends StatefulWidget {
   static final log = logger(EditableListForm);
@@ -58,8 +58,7 @@ class _EditableListFormState extends State<EditableListForm> {
       setState(() {
         log.d('Initialising the hasError map.');
         for (final key in widget.formItemDefinitions.keys) {
-          _hasError[key] =
-              !(_formKey.currentState?.fields[key]?.validate() ?? true);
+          _hasError[key] = !(_formKey.currentState?.fields[key]?.validate() ?? true);
           log.d('- hasError($key): ${_hasError[key]}');
         }
       });
@@ -72,8 +71,7 @@ class _EditableListFormState extends State<EditableListForm> {
 
     final fields = widget.formItemDefinitions.keys.map((key) {
       final fieldDefinition = widget.formItemDefinitions[key];
-      final String? initialValue =
-          initialValues[key] is String ? initialValues[key] as String : null;
+      final String? initialValue = initialValues[key] is String ? initialValues[key] as String : null;
       // TODO: Add field type tp definition and support other types of fields
       return FormBuilderTextField(
         autovalidateMode: AutovalidateMode.always,
@@ -88,8 +86,7 @@ class _EditableListFormState extends State<EditableListForm> {
         onChanged: (val) {
           setState(() {
             log.d('-- Setting hasError($key): ${_hasError[key]}');
-            _hasError[key] =
-                !(_formKey.currentState?.fields[key]?.validate() ?? true);
+            _hasError[key] = !(_formKey.currentState?.fields[key]?.validate() ?? true);
           });
         },
         // valueTransformer: (text) => num.tryParse(text),

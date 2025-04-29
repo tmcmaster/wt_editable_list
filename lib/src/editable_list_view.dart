@@ -8,7 +8,6 @@ import 'package:wt_editable_list/src/widget/search_order_by_name.dart';
 import 'package:wt_editable_list/src/widget/selection_button/selection_button.dart';
 import 'package:wt_logging/wt_logging.dart';
 import 'package:wt_models/wt_models.dart';
-import 'package:wt_state/wt_state.dart';
 
 part 'provider/editable_list_providers.dart';
 part 'provider/editable_list_state_notifier.dart';
@@ -29,7 +28,6 @@ class EditableListView<T extends BaseModel<T>> extends ConsumerWidget {
   final bool Function(T item, String value) searchPredicate;
   final bool Function(T item, T destItem, int oldIndex, int newIndex)? moveValidator;
   final void Function(List<EditableListItem<T>> list)? onMove;
-  final void Function()? onLoadPressed;
 
   final bool canAdd;
   final bool canDelete;
@@ -46,6 +44,8 @@ class EditableListView<T extends BaseModel<T>> extends ConsumerWidget {
 
   final double? itemExtent;
   final double itemSpacing;
+
+  final List<Widget> actions;
 
   const EditableListView({
     super.key,
@@ -69,7 +69,7 @@ class EditableListView<T extends BaseModel<T>> extends ConsumerWidget {
     this.itemSpacing = 5,
     this.onMove,
     this.moveValidator,
-    this.onLoadPressed,
+    this.actions = const [],
   });
 
   @override
@@ -101,16 +101,12 @@ class EditableListView<T extends BaseModel<T>> extends ConsumerWidget {
                           listNotifier.selectAll(false);
                         },
                       ),
-                    if (onLoadPressed != null)
-                      IconButton(
-                        icon: const Icon(Icons.download),
-                        onPressed: onLoadPressed,
-                      ),
                     if (canAdd)
                       IconButton(
                         icon: const Icon(FontAwesomeIcons.plus),
                         onPressed: canAdd ? () => addNewItem(context, null) : null,
                       ),
+                    ...actions,
                   ],
                 ),
               ),

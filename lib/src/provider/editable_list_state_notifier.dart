@@ -12,7 +12,7 @@ class EditableListStateNotifier<T extends BaseModel<T>> extends StateNotifier<Li
   }
 
   void replaceAll(List<T> newItems) {
-    log.d('Items have been updated: ${newItems.length})');
+    log.d('🐯Items have been updated: ${newItems.length})');
 
     state = newItems
         .map(
@@ -25,12 +25,12 @@ class EditableListStateNotifier<T extends BaseModel<T>> extends StateNotifier<Li
   }
 
   void addItem(EditableListItem<T> newItem) {
-    log.d('----- Saving new item: $newItem');
+    log.d('🐯Saving new item: $newItem');
     state = [...state, newItem];
   }
 
   void removeItem(EditableListItem<T> removedItem) {
-    log.d('Deleting item: ${removedItem.item}');
+    log.d('🐯Deleting item: ${removedItem.item}');
     state = state.where((item) => item.item != removedItem.item).toList();
   }
 
@@ -43,7 +43,7 @@ class EditableListStateNotifier<T extends BaseModel<T>> extends StateNotifier<Li
   }
 
   void selectAll(bool selected) {
-    log.d('selectAll: $selected');
+    log.d('🐯selectAll: $selected');
     state = state
         .map(
           (e) => e.selected == selected
@@ -62,7 +62,7 @@ class EditableListStateNotifier<T extends BaseModel<T>> extends StateNotifier<Li
     List<EditableListItem<T>> Function(List<EditableListItem<T>> list)? postMoveTransform,
     void Function(List<EditableListItem<T>> list)? onMove,
   }) {
-    log.d('$oldIndex -> $newIndex');
+    log.d('🐯$oldIndex -> $newIndex');
     if (oldIndex == newIndex) return;
     final list = [...state];
     final item = list.removeAt(oldIndex);
@@ -72,7 +72,7 @@ class EditableListStateNotifier<T extends BaseModel<T>> extends StateNotifier<Li
   }
 
   void selectItem(EditableListItem item, bool selected) {
-    log.d('Selecting item: ${item.item.getId()}');
+    log.d('🐯Selecting item: ${item.item.getId()}');
     state = state.map((e) {
       return e == item
           ? EditableListItem<T>(
@@ -84,6 +84,7 @@ class EditableListStateNotifier<T extends BaseModel<T>> extends StateNotifier<Li
   }
 
   void hideItems(bool Function(T item) predicate) {
+    log.d('🐯Hiding items');
     state = state.map((e) {
       final hidden = !predicate(e.item);
       return e.hidden == hidden ? e : e.copyWith(hidden: hidden);

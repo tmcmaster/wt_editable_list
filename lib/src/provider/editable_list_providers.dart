@@ -1,7 +1,7 @@
 part of '../editable_list_view.dart';
 
 class EditableListProviders<T extends BaseModel<T>> {
-  static final log = logger(EditableListProviders);
+  static final log = logger(EditableListProviders, level: Level.debug);
 
   final String name;
   late final StateNotifierProvider<EditableListStateNotifier<T>, List<EditableListItem<T>>> list;
@@ -30,6 +30,19 @@ class EditableListProviders<T extends BaseModel<T>> {
     search = _search(list);
   }
 
+  static Provider<EditableListProviders<T>> create<T extends BaseModel<T>>({
+    required String name,
+    required ProviderBase<List<T>> provider,
+  }) {
+    return Provider<EditableListProviders<T>>(
+      name: 'EditableListProviders.$name',
+      (_) => EditableListProviders<T>(
+        name: name,
+        provider: provider,
+      ),
+    );
+  }
+
   StateNotifierProvider<EditableListStateNotifier<T>, List<EditableListItem<T>>> _list({
     List<T>? initialItems,
     ProviderBase<List<T>>? provider,
@@ -40,13 +53,18 @@ class EditableListProviders<T extends BaseModel<T>> {
         final notifier = EditableListStateNotifier<T>();
 
         if (provider != null) {
-          log.d('Provider($name.list) is aAdding a listener to provider: ${provider.name}');
-          final items = ref.read(provider);
-          notifier.replaceAll(items);
-          // TODO: this should be keeping a reference to the subscription and disposing it.
-          ref.listen(provider, (_, List<T> next) {
+          log.d('StateNotifierProvider($name.list) is adding a listener to provider: ${provider.name}');
+          final subscription = ref.listen(provider, (_, List<T> next) {
             notifier.replaceAll(next);
           });
+          ref.onDispose(() {
+            log.d('Provider($name.list) is now being disposed: ${provider.name}');
+            subscription.close();
+          });
+
+          log.d('Provider($name.list) is initialising with data from provider: ${provider.name}');
+          final items = ref.read(provider);
+          notifier.replaceAll(items);
         }
 
         if (initialItems != null) {
@@ -61,6 +79,7 @@ class EditableListProviders<T extends BaseModel<T>> {
   Provider<List<String>> _ids(
     StateNotifierProvider<EditableListStateNotifier<T>, List<EditableListItem<T>>> listProvider,
   ) {
+    log.d('Provider($name.list) : creating Provider(ids)');
     return Provider(
       name: '$name.ids',
       (ref) => ref.watch(listProvider).map((e) => e.item.getId()).toList(),
@@ -71,6 +90,7 @@ class EditableListProviders<T extends BaseModel<T>> {
     StateNotifierProvider<EditableListStateNotifier<T>, List<EditableListItem<T>>> listProvider,
   ) {
     // TODO: look at making this autoDispose.
+    log.d('Provider($name.list) : creating Provider(items)');
     return Provider(
       name: '$name.items',
       (ref) => ref.watch(listProvider).map((e) => e.item).toList(),
@@ -81,6 +101,7 @@ class EditableListProviders<T extends BaseModel<T>> {
   Provider<List<T>> _selected(
     StateNotifierProvider<EditableListStateNotifier<T>, List<EditableListItem<T>>> listProvider,
   ) {
+    log.d('Provider($name.list) : creating Provider(selected)');
     return Provider(
       name: '$name.selected',
       (ref) => ref.watch(listProvider).where((e) => e.selected == true).map((e) => e.item).toList(),
@@ -90,6 +111,7 @@ class EditableListProviders<T extends BaseModel<T>> {
   AutoDisposeProviderFamily<EditableListItem<T>?, String> _family(
     StateNotifierProvider<EditableListStateNotifier<T>, List<EditableListItem<T>>> listProvider,
   ) {
+    log.d('Provider($name.list) : creating Provider(family(id))');
     return Provider.autoDispose.family<EditableListItem<T>?, String>(
       name: '$name.family',
       (ref, id) {
@@ -104,6 +126,7 @@ class EditableListProviders<T extends BaseModel<T>> {
   ProviderFamily<List<EditableListItem<T>>, String> _search(
     StateNotifierProvider<EditableListStateNotifier<T>, List<EditableListItem<T>>> listProvider,
   ) {
+    log.d('Provider($name.list) : creating Provider(search(query))');
     return Provider.family<List<EditableListItem<T>>, String>(
       name: '$name.search',
       (ref, query) {
@@ -118,6 +141,7 @@ class EditableListProviders<T extends BaseModel<T>> {
     Provider<List<T>> items,
     Provider<List<T>> selectedItems,
   ) {
+    log.d('Provider($name.list) : creating Provider(selectionState)');
     return Provider(
       name: '$name.selection',
       (ref) {

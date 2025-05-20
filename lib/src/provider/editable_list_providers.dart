@@ -104,7 +104,11 @@ class EditableListProviders<T extends BaseModel<T>> {
     log.d('Provider($name.list) : creating Provider(selected)');
     return Provider(
       name: '$name.selected',
-      (ref) => ref.watch(listProvider).where((e) => e.selected == true).map((e) => e.item).toList(),
+      (ref) {
+        final selectedItems = ref.watch(listProvider).where((e) => e.selected == true).map((e) => e.item).toList();
+        log.d('Provider($name.list) : ${selectedItems.length} items are selected.');
+        return selectedItems;
+      },
     );
   }
 

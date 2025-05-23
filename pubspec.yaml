@@ -2,6 +2,7 @@ name: wt_editable_list
 description: Generic editable list that supports drag, delete, add and selection.
 publish_to: 'none'
 version: 1.0.0+1
+repository: https://github.com/tmcmaster/wt_editable_list/tree/wix_admin
 homepage: https://github.com/tmcmaster/wt_editable_list
 
 environment:
